@@ -1,12 +1,13 @@
 from .models import *
 from django.http import HttpResponse
 from datetime import datetime, timezone
+from django.db.utils import OperationalError
 
 def insert_record(request):
     # If request is a get request
     if request.method == "GET":
-        # If request contains body then return 400 Bad request
-        if request.body:
+        # If request contains body or query params then return 400 Bad request
+        if request.body or request.GET:
             response = HttpResponse(status=400)
             response.headers["Cache-Control"] = "no-cache"
             return response
@@ -16,7 +17,7 @@ def insert_record(request):
                 obj = HealthCheck()
                 obj.date_time = datetime.now(timezone.utc)
                 obj.save()
-            except Exception as e:
+            except OperationalError:
                 response = HttpResponse(status=503)
                 response.headers["Cache-Control"] = "no-cache"
                 return response
