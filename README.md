@@ -12,7 +12,7 @@ Then activate virtual environment (if you have created one) using following comm
 
 On Windows - `venv\Scripts\activate`
 
-On Linux/Mac - `venv/bin/activate`
+On Linux/Mac - `source venv/bin/activate`
 
 Then install required python packages to run the app using requirements.txt file -
 
@@ -38,3 +38,19 @@ To run a development server you need to run command -
 `python manage.py runserver`
 
 After running this command your server will run on localhost:8000 port by default.
+
+# Running test cases
+
+To run test cases you need to run command -
+
+`python manage.py test`
+
+# Running automated setup on linux
+
+Instead of doing all the setup of application manually you can do this all setup just in one command by running `automated_setup.sh` on ubuntu but it requires `webapp.zip` file in same location as of automated_setup file so make sure to do that.
+
+You can run .sh (shell scripts) in linux as -
+
+`./file_name.sh` in this case `./automated_setup.sh`
+
+also make sure to make sure that the shell script file (.sh file) has appropriate permission to execute.
