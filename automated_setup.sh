@@ -24,6 +24,7 @@ else
     sudo mysql -e "create user 'webapp'@'localhost' identified by '$dbpass';"
     # grantint all permission to that user on database
     sudo mysql -e "grant all privileges on $dbname.* to 'webapp'@'localhost';"
+    sudo mysql -e "grant all privileges on test_$dbname.* to 'webapp'@'localhost';"
 fi
 # 5. Create linux group for application
 sudo groupadd webapp
