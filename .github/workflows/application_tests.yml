@@ -1,0 +1,72 @@
+# Name of the workflow
+name: Application tests
+# Running workflow on pull request
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Name of the job
+  test-app:
+    runs-on: ubuntu-latest
+    env:
+      db_name: ${{ secrets.DATABASE_NAME }}
+      db_user: ${{ secrets.DATABASE_USER }}
+      db_password: ${{ secrets.DATABASE_PASSWORD }}
+      db_host: ${{ secrets.DATABASE_Host }}
+      db_port: ${{ secrets.DATABASE_PORT }}
+      django_secret: ${{ secrets.SECRET_KEY }}
+      debug: ${{ secrets.DEBUG }}
+
+    steps:
+      # Cloning repository to the github workspace
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Update the package list
+        run: sudo apt-get update
+      - name: Installing python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Installing mysql server
+        run: sudo apt-get install mysql-server -y
+      - name: Setting up database
+        run: |
+          sudo mysql -e "create database $"db_name";"
+          sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
+          sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
+          sudo mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';"
+      - name: Adding user and group
+        run: |
+          sudo groupadd $"db_user"
+          sudo useradd -g $"db_user" $"db_user"
+      - name: Installing dependencies
+        run: |
+          sudo apt-get install python3-venv -y
+          sudo apt-get install pkg-config python3-dev default-libmysqlclient-dev build-essential -y
+      - name: Creating virtual environment and installing required packages
+        run: |
+          sudo python3 -m venv appenv
+          source appenv/bin/activate
+          pip install -r requirements.txt
+      - name: Changing ownership of app to be able to run by application user
+        run: |
+          sudo chown -R $"db_user":$"db_user" .
+          sudo chmod -R 755 .
+      - name: Creating environment file for application
+        run: |
+          sudo runuser webapp -c "cat > .env << EOF
+          DEBUG=$"debug"
+          SECRET_KEY=$"django_secret"
+          DATABASE_NAME=$"db_name"
+          DATABASE_USER=$"db_user"
+          DATABASE_PASSWORD=$"db_password"
+          DATABASE_Host=$"db_host"
+          DATABASE_PORT=$"db_port"
+          EOF"
+      - name: testing app
+        run: |
+          sudo -u $"db_user" bash -c "source appenv/bin/activate && python3 manage.py makemigrations"
+          sudo -u $"db_user" bash -c "source appenv/bin/activate && python3 manage.py migrate"
+          sudo -u $"db_user" bash -c "source appenv/bin/activate && python3 manage.py test"
