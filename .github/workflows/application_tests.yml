@@ -64,11 +64,13 @@ jobs:
           sudo apt-get install python3-venv -y
           sudo apt-get install pkg-config python3-dev default-libmysqlclient-dev build-essential -y
       # Creating virtual environment for application to run and install packages
-      - name: Creating virtual environment and installing required packages
+      - name: Installing required packages by python
         run: |
-          sudo python3 -m venv appenv
-          source appenv/bin/activate
           pip install -r requirements.txt
+        # run: |
+        #   sudo python3 -m venv appenv
+        #   source appenv/bin/activate
+        #   pip install -r requirements.txt
       # Changing ownership and permission of the folder to the application user 
       # - name: Changing ownership of app to be able to run by application user
       #   run: |
