@@ -10,6 +10,7 @@ jobs:
   # Name of the job
   test-app:
     runs-on: ubuntu-latest
+    # Storing all the secrets in environment
     env:
       db_name: ${{ secrets.DATABASE_NAME }}
       db_user: ${{ secrets.DATABASE_USER }}
@@ -18,55 +19,55 @@ jobs:
       db_port: ${{ secrets.DATABASE_PORT }}
       django_secret: ${{ secrets.SECRET_KEY }}
       debug: ${{ secrets.DEBUG }}
+      default_db_user: ${{ secrets.DEFAULT_DB_USER }}
+      default_db_password: ${{ secrets.DEFAULT_DB_PASSWORD }}
 
     steps:
       # Cloning repository to the github workspace
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: Update the package list
-        run: sudo apt-get update
+      # Updating package list
+      - name: Update the package list and upgrade packages
+        run: |
+         sudo apt-get update
+         sudo apt-get upgrade -y
+      # Installing python
       - name: Installing python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Installing mysql server
-        run: sudo apt-get install mysql-server -y
-      - name: Setting up database
+      # Setting up mysql server database as it is by default installed on ubuntu machines provided by github
+      # and also creating users for database and granting permission to that user
+      - name: Setting up database and creating database users and providing
         run: |
-          sudo mysql -e "create database $"db_name";"
-          sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
-          sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
-          sudo mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';"
-      - name: Adding user and group
-        run: |
-          sudo groupadd $"db_user"
-          sudo useradd -g $"db_user" $"db_user"
+          sudo systemctl start mysql.service
+          mysql -u $default_db_user -p$default_db_password -e"create database $db_name;"
+          mysql -u $default_db_user -p$default_db_password -e"create user '$db_user'@'$db_host' identified by '$db_password';"
+          mysql -u $default_db_user -p$default_db_password -e"grant all privileges on $db_name.* to '$db_user'@'$db_host';"
+          mysql -u $default_db_user -p$default_db_password -e"grant all privileges on test_$db_name.* to '$db_user'@'$db_host';"
+      # Installing remaining dependencies that are required
       - name: Installing dependencies
         run: |
           sudo apt-get install python3-venv -y
           sudo apt-get install pkg-config python3-dev default-libmysqlclient-dev build-essential -y
-      - name: Creating virtual environment and installing required packages
-        run: |
-          sudo python3 -m venv appenv
-          source appenv/bin/activate
-          pip install -r requirements.txt
-      - name: Changing ownership of app to be able to run by application user
-        run: |
-          sudo chown -R $"db_user":$"db_user" .
-          sudo chmod -R 755 .
+      # Creating virtual environment for application to run and install packages
+      - name: Installing required packages by python
+        run: pip install -r requirements.txt
+      # Creating .env file which is required by the application
       - name: Creating environment file for application
         run: |
-          sudo runuser webapp -c "cat > .env << EOF
-          DEBUG=$"debug"
-          SECRET_KEY=$"django_secret"
-          DATABASE_NAME=$"db_name"
-          DATABASE_USER=$"db_user"
-          DATABASE_PASSWORD=$"db_password"
-          DATABASE_Host=$"db_host"
-          DATABASE_PORT=$"db_port"
-          EOF"
-      - name: testing app
+          sudo cat > .env << EOF
+          DEBUG=$debug
+          SECRET_KEY=$django_secret
+          DATABASE_NAME=$db_name
+          DATABASE_USER=$db_user
+          DATABASE_PASSWORD=$db_password
+          DATABASE_Host=$db_host
+          DATABASE_PORT=$db_port
+          EOF
+      # Running application tests
+      - name: Testing app
         run: |
-          sudo -u $"db_user" bash -c "source appenv/bin/activate && python3 manage.py makemigrations"
-          sudo -u $"db_user" bash -c "source appenv/bin/activate && python3 manage.py migrate"
-          sudo -u $"db_user" bash -c "source appenv/bin/activate && python3 manage.py test"
+          python3 manage.py makemigrations
+          python3 manage.py migrate
+          python3 manage.py test
