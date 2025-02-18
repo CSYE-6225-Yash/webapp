@@ -51,7 +51,7 @@ jobs:
           sudo systemctl start mysql.service
           echo $default_db_user
           echo $default_db_password
-          mysql -u ${{ secrets.DEFAULT_DB_USER }} -p${{ secrets.DEFAULT_DB_PASSWORD }} -e"quit"
+          mysql -u $default_db_user -p$default_db_password -e"quit"
           echo passed
           sudo mysql -e "quit;" -u$default_db_user -p$default_db_password
           sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
