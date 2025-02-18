@@ -61,12 +61,12 @@ jobs:
       # Installing remaining dependencies that are required
       - name: Installing dependencies
         run: |
-          sudo apt-get install python-venv -y
-          sudo apt-get install pkg-config python-dev default-libmysqlclient-dev build-essential -y
+          sudo apt-get install python3-venv -y
+          sudo apt-get install pkg-config python3-dev default-libmysqlclient-dev build-essential -y
       # Creating virtual environment for application to run and install packages
       - name: Creating virtual environment and installing required packages
         run: |
-          sudo python -m venv appenv
+          sudo python3 -m venv appenv
           source appenv/bin/activate
           pip install -r requirements.txt
       # Changing ownership and permission of the folder to the application user 
