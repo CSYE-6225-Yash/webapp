@@ -35,16 +35,16 @@ jobs:
         with:
           python-version: '3.13'
       # Installing Mysql server
-      - name: Installing mysql server
-        run: sudo apt-get install mysql-server -y
+      # - name: Installing mysql server
+      #   run: sudo apt-get install mysql-server -y
       # Setting up mysql server database
       - name: Setting up database
         run: |
-          sudo systemctl start mysql.service
-          sudo mysql -e "create database $"db_name";" --user=root --password=$"default_db_password"
-          sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';" --user=root --password=$"default_db_password"
-          sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';" --user=root --password=$"default_db_password"
-          sudo mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';" --user=root --password=$"default_db_password"
+          sudo /etc/init.d/mysql start
+          mysql -e "create database $"db_name";" -u$"default_db_user" -p$"default_db_password"
+          mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';" -u$"default_db_user" -p$"default_db_password"
+          mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';" -u$"default_db_user" -p$"default_db_password"
+          mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';" -u$"default_db_user" -p$"default_db_password"
       # Adding application user and group
       - name: Adding user and group
         run: |
