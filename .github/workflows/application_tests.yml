@@ -27,13 +27,13 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       # Updating package list
-      - name: Update the package list
-        run: sudo apt-get update
+      # - name: Update the package list
+      #   run: sudo apt-get update
       # Installing python
-      - name: Installing python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
+      # - name: Installing python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.13'
       # Uninstalling Mysql server
       # - name: Uninstalling mysql server
       #   run: |
@@ -43,16 +43,16 @@ jobs:
       #     sudo apt autoclean -y
       #     sudo apt remove dbconfig-mysql -y
       # Installing Mysql server
-      - name: Installing mysql server
-        run: sudo apt-get install mysql-server -y
+      # - name: Installing mysql server
+      #   run: sudo apt-get install mysql-server -y
       # Setting up mysql server database
       - name: Setting up database
         run: |
           sudo systemctl start mysql.service
-          mysql -u$"default_db_user" -p$"default_db_password"
-#          -e "create database $"db_name";"
-#          sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
-#          sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
+          mysql -e "create database $"db_name";" -u$"default_db_user" -p$"root"
+#          mysql -e "create database $"db_name";"
+#         sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
+#         sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
 #          sudo mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';"
       # Adding application user and group
       - name: Adding user and group
