@@ -51,12 +51,12 @@ jobs:
           sudo systemctl start mysql.service
           echo $default_db_user
           echo $default_db_password
-          mysql -u $default_db_user -p$default_db_password -e"CREATE DATABASE $db_name"
+          mysql -u $default_db_user -p$default_db_password -e"CREATE DATABASE $db_name;"
           echo passed
-          sudo mysql -e "quit;" -u$default_db_user -p$default_db_password
-          sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
-          sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
-          sudo mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';"
+          mysql -u $default_db_user -p$default_db_password -e"show databases;"
+          mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
+          mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
+          mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';"
       # Adding application user and group
       - name: Adding user and group
         run: |
