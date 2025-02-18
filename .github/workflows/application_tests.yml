@@ -40,11 +40,11 @@ jobs:
       # Setting up mysql server database
       - name: Setting up database
         run: |
-          sudo /etc/init.d/mysql start
-          mysql -e "create database $"db_name";" -u$default_db_user -p$default_db_password
-          mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';" -u$default_db_user -p$default_db_password
-          mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';" -u$default_db_user -p$default_db_password
-          mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';" -u$default_db_user -p$default_db_password
+          sudo systemctl start mysql.service
+          mysql -e "create database $"db_name";" --user=$"default_db_user" --password=$"default_db_password"
+          mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';" --user=$"default_db_user" --password=$"default_db_password"
+          mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';" --user=$"default_db_user" --password=$"default_db_password"
+          mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';" --user=$"default_db_user" --password=$"default_db_password"
       # Adding application user and group
       - name: Adding user and group
         run: |
