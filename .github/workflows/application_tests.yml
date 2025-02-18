@@ -41,10 +41,10 @@ jobs:
       - name: Setting up database
         run: |
           sudo systemctl start mysql.service
-          mysql -e "create database $"db_name";" --user=$"default_db_user" --password=$"default_db_password"
-          mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';" --user=$"default_db_user" --password=$"default_db_password"
-          mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';" --user=$"default_db_user" --password=$"default_db_password"
-          mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';" --user=$"default_db_user" --password=$"default_db_password"
+          sudo mysql -e "create database $"db_name";" --user=$"default_db_user" --password=$"default_db_password"
+          sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';" --user=$"default_db_user" --password=$"default_db_password"
+          sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';" --user=$"default_db_user" --password=$"default_db_password"
+          sudo mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';" --user=$"default_db_user" --password=$"default_db_password"
       # Adding application user and group
       - name: Adding user and group
         run: |
