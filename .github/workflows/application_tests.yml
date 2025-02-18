@@ -49,7 +49,7 @@ jobs:
       - name: Setting up database
         run: |
           sudo systemctl start mysql.service
-          sudo mysql -u $"default_db_user"
+          sudo mysql -u$"default_db_user" -p$"default_db_password"
 #          -e "create database $"db_name";"
 #          sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
 #          sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
