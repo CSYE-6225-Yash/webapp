@@ -51,7 +51,7 @@ jobs:
           sudo systemctl start mysql.service
           echo ${{ secrets.DEFAULT_DB_USER }}
           echo create database $db_name
-          mysql -u ${{ secrets.DEFAULT_DB_USER }} -p ${{ secrets.DEFAULT_DB_PASSWORD }} -e"create database $db_name;"
+          mysql --user=${{ secrets.DEFAULT_DB_USER }} --password=${{ secrets.DEFAULT_DB_PASSWORD }} -e"create database $db_name;"
           echo $default_db_user
           sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
           sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
