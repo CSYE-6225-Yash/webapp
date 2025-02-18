@@ -41,10 +41,10 @@ jobs:
       - name: Setting up database
         run: |
           sudo /etc/init.d/mysql start
-          sudo mysql -e "create database $"db_name";"
-          sudo mysql -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
-          sudo mysql -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
-          sudo mysql -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';"
+          sudo mysql -h $"db_host" -u$"default_db_user" -p$"default_db_password" -e "create database $"db_name";"
+          sudo mysql -h $"db_host" -u$"default_db_user" -p$"default_db_password" -e "create user '$"db_user"'@'$"db_host"' identified by '$"db_password"';"
+          sudo mysql -h $"db_host" -u$"default_db_user" -p$"default_db_password" -e "grant all privileges on $"db_name".* to '$"db_user"'@'$"db_host"';"
+          sudo mysql -h $"db_host" -u$"default_db_user" -p$"default_db_password" -e "grant all privileges on test_$"db_name".* to '$"db_user"'@'$"db_host"';"
       # Adding application user and group
       - name: Adding user and group
         run: |
