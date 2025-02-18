@@ -79,7 +79,7 @@ jobs:
       # Creating .env file which is required by the application
       - name: Creating environment file for application
         run: |
-          sudo runuser webapp -c "cat > .env << EOF
+          sudo cat > .env << EOF
           DEBUG=$debug
           SECRET_KEY=$django_secret
           DATABASE_NAME=$db_name
@@ -87,7 +87,7 @@ jobs:
           DATABASE_PASSWORD=$db_password
           DATABASE_Host=$db_host
           DATABASE_PORT=$db_port
-          EOF"
+          EOF
       # Running application tests
       - name: Testing app
         run: |
