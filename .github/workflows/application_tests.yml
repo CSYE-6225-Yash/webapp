@@ -27,37 +27,24 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       # Updating package list
-      - name: Update the package list
-        run: sudo apt-get update
+      - name: Update the package list and upgrade packages
+        run: |
+         sudo apt-get update
+         sudo apt-get upgrade -y
       # Installing python
       - name: Installing python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      # Uninstalling Mysql server
-      # - name: Uninstalling mysql server
-      #   run: |
-      #     sudo apt remove --purge mysql-server -y
-      #     sudo apt purge mysql-server
-      #     sudo apt autoremove -y
-      #     sudo apt autoclean -y
-      #     sudo apt remove dbconfig-mysql -y
-      # Installing Mysql server
-      # - name: Installing mysql server
-      #   run: sudo apt-get install mysql-server -y
-      # Setting up mysql server database
-      - name: Setting up database
+      # Setting up mysql server database as it is by default installed on ubuntu machines provided by github
+      # and also creating users for database and granting permission to that user
+      - name: Setting up database and creating database users and providing
         run: |
           sudo systemctl start mysql.service
           mysql -u $default_db_user -p$default_db_password -e"create database $db_name;"
           mysql -u $default_db_user -p$default_db_password -e"create user '$db_user'@'$db_host' identified by '$db_password';"
           mysql -u $default_db_user -p$default_db_password -e"grant all privileges on $db_name.* to '$db_user'@'$db_host';"
           mysql -u $default_db_user -p$default_db_password -e"grant all privileges on test_$db_name.* to '$db_user'@'$db_host';"
-      # Adding application user and group
-      # - name: Adding user and group
-      #   run: |
-      #     sudo groupadd $"db_user"
-      #     sudo useradd -g $"db_user" $"db_user"
       # Installing remaining dependencies that are required
       - name: Installing dependencies
         run: |
@@ -65,17 +52,7 @@ jobs:
           sudo apt-get install pkg-config python3-dev default-libmysqlclient-dev build-essential -y
       # Creating virtual environment for application to run and install packages
       - name: Installing required packages by python
-        run: |
-          pip install -r requirements.txt
-        # run: |
-        #   sudo python3 -m venv appenv
-        #   source appenv/bin/activate
-        #   pip install -r requirements.txt
-      # Changing ownership and permission of the folder to the application user 
-      # - name: Changing ownership of app to be able to run by application user
-      #   run: |
-      #     sudo chown -R $"db_user":$"db_user" .
-      #     sudo chmod -R 755 .
+        run: pip install -r requirements.txt
       # Creating .env file which is required by the application
       - name: Creating environment file for application
         run: |
