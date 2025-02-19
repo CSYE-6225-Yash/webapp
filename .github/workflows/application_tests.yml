@@ -41,9 +41,7 @@ jobs:
       - name: Setting up database and creating database users and providing
         run: |
           sudo systemctl start mysql.service
-          mysql -u $default_db_user -p$default_db_password -e"create database $db_name;"
           mysql -u $default_db_user -p$default_db_password -e"create user '$db_user'@'$db_host' identified by '$db_password';"
-          mysql -u $default_db_user -p$default_db_password -e"grant all privileges on $db_name.* to '$db_user'@'$db_host';"
           mysql -u $default_db_user -p$default_db_password -e"grant all privileges on test_$db_name.* to '$db_user'@'$db_host';"
       # Installing remaining dependencies that are required
       - name: Installing dependencies
@@ -68,6 +66,4 @@ jobs:
       # Running application tests
       - name: Testing app
         run: |
-          python3 manage.py makemigrations
-          python3 manage.py migrate
           python3 manage.py test
