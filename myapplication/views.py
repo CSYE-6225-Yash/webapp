@@ -33,5 +33,5 @@ def insert_record(request):
 # If requested other url than healthz then return 404 Not Found
 def not_found(request):
     response = HttpResponse(status=404)
-    #response.headers["Cache-Control"] = "no-cache"
+    response.headers["Cache-Control"] = "no-cache"
     return response
