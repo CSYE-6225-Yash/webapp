@@ -7,7 +7,7 @@ class AppHealthCheckTestCase(TestCase):
     # Testcase for get request without payload
     def test_get(self):
         response = self.client.get("/healthz")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertTrue("Cache-Control" in response.headers)
     
     # Testcase for get request with payload (query parameters)
