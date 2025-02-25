@@ -13,7 +13,7 @@ packer {
 
 # Adding source for creating machine image on aws
 source "amazon-ebs" "webapp-aws-ami" {
-  ami_names       = "webapp-${formatdate("YYYY-MM-DD", timestamp())}"
+  ami_name        = "webapp-${formatdate("YYYY-MM-DD", timestamp())}"
   ami_description = "AMI for webapp"
   instance_type   = "${var.instance_type}"
   region          = "${var.aws_region}"
