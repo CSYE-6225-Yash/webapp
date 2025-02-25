@@ -56,7 +56,7 @@ build {
 
   # Sending webapp.zip to instance for building machine image
   provisioner "file" {
-    source      = "webapp.zip"
+    source  = "webapp.zip"
     destination = "/tmp/webapp.zip"
   }
 
