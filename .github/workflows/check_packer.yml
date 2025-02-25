@@ -18,6 +18,12 @@ jobs:
       # Installing packer and setting up its CLI
       - name: Install packer cli
         uses: hashicorp/setup-packer@main
+      # Creating empty webapp.zip so that validate will not throw error as we are going to create that zip file
+      # In the create machine image workflow
+      - name: Adding webapp.zip
+        run: |
+          sudo apt-get install zip -y
+          sudo zip -r webapp myapplication tests webapp manage.py requirements.txt
       # Downloding and installing plugins that are required by the terraform configuration files
       - name: Downloading and installing plugins
         run: "packer init ."
