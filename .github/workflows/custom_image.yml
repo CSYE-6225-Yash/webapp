@@ -1,0 +1,177 @@
+# Name of the workflow
+name: Custom image
+# Running workflow on pull request is closed
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  # Name of the job
+  test-app:
+    # If closed request is merged only run the job
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    # Storing all the secrets in environment
+    env:
+      db_name: ${{ secrets.DATABASE_NAME }}
+      db_user: ${{ secrets.DATABASE_USER }}
+      db_password: ${{ secrets.DATABASE_PASSWORD }}
+      db_host: ${{ secrets.DATABASE_Host }}
+      db_port: ${{ secrets.DATABASE_PORT }}
+      django_secret: ${{ secrets.SECRET_KEY }}
+      debug: ${{ secrets.DEBUG }}
+      default_db_user: ${{ secrets.DEFAULT_DB_USER }}
+      default_db_password: ${{ secrets.DEFAULT_DB_PASSWORD }}
+
+    steps:
+      # Cloning repository to the github workspace
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      # Updating package list
+      - name: Update the package list and upgrade packages
+        run: |
+         sudo apt-get update
+         sudo apt-get upgrade -y
+      # Installing python
+      - name: Installing python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      # Setting up mysql server database as it is by default installed on ubuntu machines provided by github
+      # and also creating users for database and granting permission to that user
+      - name: Setting up database and creating database users and providing
+        run: |
+          sudo systemctl start mysql.service
+          mysql -u $default_db_user -p$default_db_password -e"create user '$db_user'@'$db_host' identified by '$db_password';"
+          mysql -u $default_db_user -p$default_db_password -e"grant all privileges on test_$db_name.* to '$db_user'@'$db_host';"
+      # Installing remaining dependencies that are required
+      - name: Installing dependencies
+        run: |
+          sudo apt-get install python3-venv -y
+          sudo apt-get install pkg-config python3-dev default-libmysqlclient-dev build-essential -y
+      # Creating virtual environment for application to run and install packages
+      - name: Installing required packages by python
+        run: pip install -r requirements.txt
+      # Creating .env file which is required by the application
+      - name: Creating environment file for application
+        run: |
+          sudo cat > .env << EOF
+          DEBUG=$debug
+          SECRET_KEY=$django_secret
+          DATABASE_NAME=$db_name
+          DATABASE_USER=$db_user
+          DATABASE_PASSWORD=$db_password
+          DATABASE_Host=$db_host
+          DATABASE_PORT=$db_port
+          EOF
+      # Running application tests
+      - name: Testing app
+        run: |
+          python3 manage.py test
+
+  # Name of the job
+  create-custom-image:
+    # If closed request is merged only run the job
+    if: github.event.pull_request.merged == true
+    needs: test-app
+    runs-on: ubuntu-latest
+    # Storing all the secrets in environment
+    env:
+      db_name: ${{ secrets.DATABASE_NAME }}
+      db_user: ${{ secrets.DATABASE_USER }}
+      db_password: ${{ secrets.DATABASE_PASSWORD }}
+      db_host: ${{ secrets.DATABASE_Host }}
+      db_port: ${{ secrets.DATABASE_PORT }}
+      django_secret: ${{ secrets.SECRET_KEY }}
+      debug: ${{ secrets.DEBUG }}
+      default_db_user: ${{ secrets.DEFAULT_DB_USER }}
+      default_db_password: ${{ secrets.DEFAULT_DB_PASSWORD }}
+      aws_access_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret: ${{ secrets.AWS_ACCESS_KEY }}
+      aws_df_region: ${{ var.AWS_DEFAULT_REGION }}
+      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+      aws_region: ${{ var.AWS_REGION }}
+      source_ami: ${{ var.SOURCE_AMI }}
+      ssh_username: ${{ var.SSH_USERNAME }}
+      instance_type: ${{ var.INSTANCE_TYPE }}
+      ami_users: ${{ secrets.AMI_USERS }}
+      volume_size: ${{ var.VOLUME_SIZE }}
+      volume_type: ${{ var.VOLUME_TYPE }}
+      project_id: ${{ secrets.PROJECT_ID }}
+      source_image: ${{ var.SOURCE_IMAGE }}
+      zone: ${{ var.ZONE }}
+      disk_size: ${{ var.DISK_SIZE }}
+      machine_type: ${{ var.MACHINE_TYPE }}
+
+    steps:
+      # Cloning repository to the github workspace
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      # Updating package list
+      - name: Update the package list and upgrade packages
+        run: |
+         sudo apt-get update
+         sudo apt-get upgrade -y
+      # Setting up aws-cli
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: $aws_access_id
+          aws-secret-access-key: $aws_secret
+          aws-region: $aws_df_region
+      # Setting up gcloud-cli
+      - name: Authenticating to gcloud-cli
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: $GCP_CREDENTIALS
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+      # Creating .env file which is required by the application
+      - name: Creating environment file for application
+        run: |
+          sudo cat > .env << EOF
+          DEBUG=$debug
+          SECRET_KEY=$django_secret
+          DATABASE_NAME=$db_name
+          DATABASE_USER=$db_user
+          DATABASE_PASSWORD=$db_password
+          DATABASE_Host=$db_host
+          DATABASE_PORT=$db_port
+          EOF
+      # Installing zip and building artifact
+      - name: Installing zip and building artifact
+        run: |
+          sudo apt-get install zip -y
+          sudo zip -r webapp myapplication tests webapp manage.py .env requirements.txt
+      # Cleaning up carriage return(\r) if any in shell scripts
+      - name: Cleaning up shell script files by checking carriage return
+        run: |
+          sudo sed -i 's/\r$//' update_server.sh
+          sudo sed -i 's/\r$//' database_setup.sh
+          sudo sed -i 's/\r$//' webapp_setup.sh
+      # Creating packer variable file
+      - name: Creating variable file for packer
+        run: |
+          sudo cat > dev.pkrvars.hcl << EOF
+          aws_region    = "$aws_region"
+          source_ami    = "$source_ami"
+          ssh_username  = "$ssh_username"
+          instance_type = "$instance_type"
+          ami_users     = $ami_users
+          volume_size   = $volume_size
+          volume_type   = "$volume_type"
+          database_name = "$db_name"
+          database_pass = "$db_password"
+          user          = "$db_user"
+          project_id   = "$project_id"
+          source_image = "$source_image"
+          zone         = "$zone"
+          disk_size    = $disk_size
+          machine_type = "$machine_type"
+          EOF
+      # Running packer build
+      - name: Running packer build
+        run: packer build -var-file=dev.pkrvars.hcl .
