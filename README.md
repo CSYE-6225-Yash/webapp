@@ -54,3 +54,55 @@ You can run .sh (shell scripts) in linux as -
 `./file_name.sh` in this case `./automated_setup.sh`
 
 also make sure to make sure that the shell script file (.sh file) has appropriate permission to execute.
+
+# Configure aws-cli using following steps -
+
+For creating aws-cli profile use following command -
+
+`aws configure --profile profile_name`
+
+For using that profile you need to setup temparary environment variables in your system do this with following command -
+
+For windows -
+
+`set AWS_PROFILE=profile_name`
+
+For linux/mac -
+
+`export AWS_PROFILE=profile_name`
+
+# Set up gcloud-cli using following steps -
+
+For configuring gcloud-cli profile use following command -
+
+`gcloud config configurations create config_name`
+
+For activating created configuration use -
+
+`gcloud config configurations activate config_name`
+
+For authenticating using cli create a service account in IAM amd then generate json file and then use following command -
+
+`auth login --cred-file=key_file`
+
+For packer to use gcp key you need to set environment variable containing that key file location -
+
+For windows -
+
+`set GOOGLE_APPLICATION_CREDENTIALS=key_file`
+
+For linux/mac -
+
+`export GOOGLE_APPLICATION_CREDENTIALS=key_file`
+
+# Packer basic commands to get started with custom machine image building -
+
+`packer init .` - this command initializes packer and installs required plugins.
+
+-Note that in above command `.` refers to the current directory that contains packer template you can specify any other path or file if you want
+
+`packer fmt .` - this command correctly formats the packer files with correct indentation and spacing.
+
+`packer validate -var-file=var.pkrvars.hcl .` - this command validates the packer files and returns error if there is any syntax error. -var-file here is optional if you have set default variable values to "" then you might kept a variable file and need to pass that file for associating variables.
+
+`packer build -var-file=var.pkrvars.hcl .` - this command is used to start building the custom image.

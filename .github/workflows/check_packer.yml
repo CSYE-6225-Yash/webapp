@@ -1,0 +1,35 @@
+# Name of the workflow
+name: Validate packer
+# Running workflow on pull request
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Name of the job
+  Install-packer-and-perform-its-validations:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Cloning repository to the github workspace
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      # Installing packer and setting up its CLI
+      - name: Install packer cli
+        uses: hashicorp/setup-packer@main
+      # Creating empty webapp.zip so that validate will not throw error as we are going to create that zip file
+      # In the create machine image workflow
+      - name: Adding webapp.zip
+        run: |
+          sudo apt-get install zip -y
+          sudo zip -r webapp myapplication tests webapp manage.py requirements.txt
+      # Downloding and installing plugins that are required by the terraform configuration files
+      - name: Downloading and installing plugins
+        run: "packer init ."
+      # Formating terraform files recursively (processes files in subdirectory as well) and if files are not formated then returns error
+      - name: Formating packer configuration files
+        run: "packer fmt -check -recursive ."
+      # Checking terraform syntax in configuration files is correct or not
+      - name: Validating terraform configuration files
+        run: "packer validate ."
