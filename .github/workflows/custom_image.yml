@@ -91,20 +91,20 @@ jobs:
       default_db_password: ${{ secrets.DEFAULT_DB_PASSWORD }}
       aws_access_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret: ${{ secrets.AWS_ACCESS_KEY }}
-      aws_df_region: ${{ var.AWS_DEFAULT_REGION }}
+      aws_df_region: ${{ vars.AWS_DEFAULT_REGION }}
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-      aws_region: ${{ var.AWS_REGION }}
-      source_ami: ${{ var.SOURCE_AMI }}
-      ssh_username: ${{ var.SSH_USERNAME }}
-      instance_type: ${{ var.INSTANCE_TYPE }}
+      aws_region: ${{ vars.AWS_REGION }}
+      source_ami: ${{ vars.SOURCE_AMI }}
+      ssh_username: ${{ vars.SSH_USERNAME }}
+      instance_type: ${{ vars.INSTANCE_TYPE }}
       ami_users: ${{ secrets.AMI_USERS }}
-      volume_size: ${{ var.VOLUME_SIZE }}
-      volume_type: ${{ var.VOLUME_TYPE }}
+      volume_size: ${{ vars.VOLUME_SIZE }}
+      volume_type: ${{ vars.VOLUME_TYPE }}
       project_id: ${{ secrets.PROJECT_ID }}
-      source_image: ${{ var.SOURCE_IMAGE }}
-      zone: ${{ var.ZONE }}
-      disk_size: ${{ var.DISK_SIZE }}
-      machine_type: ${{ var.MACHINE_TYPE }}
+      source_image: ${{ vars.SOURCE_IMAGE }}
+      zone: ${{ vars.ZONE }}
+      disk_size: ${{ vars.DISK_SIZE }}
+      machine_type: ${{ vars.MACHINE_TYPE }}
 
     steps:
       # Cloning repository to the github workspace
