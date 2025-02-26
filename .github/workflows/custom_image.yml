@@ -91,9 +91,9 @@ jobs:
       default_db_password: ${{ secrets.DEFAULT_DB_PASSWORD }}
       aws_access_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret: ${{ secrets.AWS_ACCESS_KEY }}
-      aws_df_region: ${{ vars.AWS_DEFAULT_REGION }}
+      aws_df_region: ${{ vars.AWS_DF_REGION }}
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-      aws_region: ${{ vars.AWS_REGION }}
+      aws_region: ${{ vars.AWS_INSTANCE_REGION }}
       source_ami: ${{ vars.SOURCE_AMI }}
       ssh_username: ${{ vars.SSH_USERNAME }}
       instance_type: ${{ vars.INSTANCE_TYPE }}
@@ -110,11 +110,6 @@ jobs:
       # Cloning repository to the github workspace
       - name: Check out repository code
         uses: actions/checkout@v4
-      # Displaying variables
-      - name: Dispaly variables
-        run: |
-          echo $aws_access_id
-          echo $aws_df_region
       # Updating package list
       - name: Update the package list and upgrade packages
         run: |
