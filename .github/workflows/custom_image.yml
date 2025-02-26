@@ -91,8 +91,8 @@ jobs:
       source_ami: ${{ vars.SOURCE_AMI }}
       ssh_username: ${{ vars.SSH_USERNAME }}
       instance_type: ${{ vars.INSTANCE_TYPE }}
-      dev_account: ${{ secrets.dev_account }}
-      demo_account: ${{ secrets.demo_account }}
+      dev_account: ${{ secrets.DEV_ACCOUNT }}
+      demo_account: ${{ secrets.DEMO_ACCOUNT }}
       volume_size: ${{ vars.VOLUME_SIZE }}
       volume_type: ${{ vars.VOLUME_TYPE }}
       project_id: ${{ secrets.PROJECT_ID }}
