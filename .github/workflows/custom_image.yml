@@ -11,7 +11,7 @@ on:
 jobs:
   # Name of the job
   test-app:
-    # If closed request is merged only run the job
+    # If closed request is merged then only run the job
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     # Storing all the secrets in environment
@@ -74,8 +74,6 @@ jobs:
 
   # Name of the job
   create-custom-image:
-    # If closed request is merged only run the job
-    if: github.event.pull_request.merged == true
     needs: test-app
     runs-on: ubuntu-latest
     # Storing all the secrets in environment
@@ -168,6 +166,15 @@ jobs:
           disk_size    = $disk_size
           machine_type = "$machine_type"
           EOF
+      # Downloding and installing plugins that are required by the packer configuration files
+      - name: Downloading and installing plugins
+        run: "packer init ."
+      # Formating packer files recursively (processes files in subdirectory as well) and if files are not formated then returns error
+      - name: Formating packer configuration files
+        run: "packer fmt ."
+      # Checking packer syntax in configuration files is correct or not
+      - name: Validating packer configuration files
+        run: "packer validate -var-file=dev.pkrvars.hcl ."
       # Running packer build
       - name: Running packer build
         run: packer build -var-file=dev.pkrvars.hcl .
