@@ -19,7 +19,7 @@ source "amazon-ebs" "webapp-aws-ami" {
   region          = "${var.aws_region}"
   source_ami      = "${var.source_ami}"
   ssh_username    = "${var.ssh_username}"
-  ami_users       = var.ami_users
+  ami_users       = ["${var.dev_account}", "${var.demo_account}"]
 
   aws_polling {
     delay_seconds = 60

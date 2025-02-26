@@ -91,7 +91,8 @@ jobs:
       source_ami: ${{ vars.SOURCE_AMI }}
       ssh_username: ${{ vars.SSH_USERNAME }}
       instance_type: ${{ vars.INSTANCE_TYPE }}
-      ami_users: ${{ secrets.AMI_USERS }}
+      dev_account: ${{ secrets.DEV_ACCOUNT }}
+      demo_account: ${{ secrets.DEMO_ACCOUNT }}
       volume_size: ${{ vars.VOLUME_SIZE }}
       volume_type: ${{ vars.VOLUME_TYPE }}
       project_id: ${{ secrets.PROJECT_ID }}
@@ -154,7 +155,8 @@ jobs:
           source_ami    = "$source_ami"
           ssh_username  = "$ssh_username"
           instance_type = "$instance_type"
-          ami_users     = $ami_users
+          dev_account   = "$dev_account"
+          demo_account  ="$demo_account"
           volume_size   = $volume_size
           volume_type   = "$volume_type"
           database_name = "$db_name"
