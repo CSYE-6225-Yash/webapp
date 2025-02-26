@@ -110,6 +110,11 @@ jobs:
       # Cloning repository to the github workspace
       - name: Check out repository code
         uses: actions/checkout@v4
+      # Displaying variables
+      - name: Dispaly variables
+        run: |
+          echo $aws_access_id
+          echo $aws_df_region
       # Updating package list
       - name: Update the package list and upgrade packages
         run: |
