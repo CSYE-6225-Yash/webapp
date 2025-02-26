@@ -24,12 +24,12 @@ jobs:
         run: |
           sudo apt-get install zip -y
           sudo zip -r webapp myapplication tests webapp manage.py requirements.txt
-      # Downloding and installing plugins that are required by the terraform configuration files
+      # Downloding and installing plugins that are required by the packer configuration files
       - name: Downloading and installing plugins
         run: "packer init ."
-      # Formating terraform files recursively (processes files in subdirectory as well) and if files are not formated then returns error
+      # Formating packer files recursively (processes files in subdirectory as well) and if files are not formated then returns error
       - name: Formating packer configuration files
         run: "packer fmt -check -recursive ."
-      # Checking terraform syntax in configuration files is correct or not
-      - name: Validating terraform configuration files
+      # Checking packer syntax in configuration files is correct or not
+      - name: Validating packer configuration files
         run: "packer validate ."
