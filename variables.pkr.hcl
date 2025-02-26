@@ -18,9 +18,14 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
-variable "ami_users" {
-  type    = list(string)
-  default = []
+variable "dev_account" {
+  type    = string
+  default = ""
+}
+
+variable "demo_account" {
+  type    = string
+  default = ""
 }
 
 variable "volume_size" {
