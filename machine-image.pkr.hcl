@@ -36,7 +36,7 @@ source "amazon-ebs" "webapp-aws-ami" {
 
 # Adding source for creating machine image on gcp
 source "googlecompute" "webapp-gcp-mi" {
-  image_name        = "webapp-${formatdate("YYYY-MM-DD", timestamp())}"
+  image_name        =    "webapp-${formatdate("YYYY-MM-DD", timestamp())}"
   image_description = "Machine image for webapp"
   project_id        = "${var.project_id}"
   source_image      = "${var.source_image}"
