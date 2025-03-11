@@ -105,4 +105,4 @@ For linux/mac -
 
 `packer validate -var-file=var.pkrvars.hcl .` - this command validates the packer files and returns error if there is any syntax error. -var-file here is optional if you have set default variable values to "" then you might kept a variable file and need to pass that file for associating variables.
 
-`packer build -var-file=var.pkrvars.hcl .` - this command is used to start building the custom image.
+`packer build -var-file=var.pkrvars.hcl .` - this command is used to start building the custom image. 
