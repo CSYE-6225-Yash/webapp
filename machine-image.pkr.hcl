@@ -15,7 +15,7 @@ packer {
 source "amazon-ebs" "webapp-aws-ami" {
   ami_name        = "webapp-${formatdate("YYYY-MM-DD", timestamp())}"
   ami_description = "AMI for webapp"
-  instance_type   = "${var.instance_type}"
+  instance_type   = "${var.instance_typeaa}"
   region          = "${var.aws_region}"
   source_ami      = "${var.source_ami}"
   ssh_username    = "${var.ssh_username}"
