@@ -78,15 +78,9 @@ jobs:
     runs-on: ubuntu-latest
     # Storing all the secrets in environment
     env:
-      db_name: ${{ secrets.DATABASE_NAME }}
-      db_user: ${{ secrets.DATABASE_USER }}
-      db_password: ${{ secrets.DATABASE_PASSWORD }}
-      db_host: ${{ secrets.DATABASE_Host }}
-      db_port: ${{ secrets.DATABASE_PORT }}
+      sys_user: ${{ secrets.SYSTEM_USER }}
       django_secret: ${{ secrets.SECRET_KEY }}
       debug: ${{ secrets.DEBUG }}
-      default_db_user: ${{ secrets.DEFAULT_DB_USER }}
-      default_db_password: ${{ secrets.DEFAULT_DB_PASSWORD }}
       aws_region_packer: ${{ vars.AWS_INSTANCE_REGION }}
       source_ami: ${{ vars.SOURCE_AMI }}
       ssh_username: ${{ vars.SSH_USERNAME }}
@@ -130,11 +124,6 @@ jobs:
           sudo cat > .env << EOF
           DEBUG=$debug
           SECRET_KEY=$django_secret
-          DATABASE_NAME=$db_name
-          DATABASE_USER=$db_user
-          DATABASE_PASSWORD=$db_password
-          DATABASE_Host=$db_host
-          DATABASE_PORT=$db_port
           EOF
       # Installing zip and building artifact
       - name: Installing zip and building artifact
@@ -145,7 +134,6 @@ jobs:
       - name: Cleaning up shell script files by checking carriage return
         run: |
           sudo sed -i 's/\r$//' update_server.sh
-          sudo sed -i 's/\r$//' database_setup.sh
           sudo sed -i 's/\r$//' webapp_setup.sh
       # Creating packer variable file
       - name: Creating variable file for packer
@@ -159,9 +147,7 @@ jobs:
           demo_account  ="$demo_account"
           volume_size   = $volume_size
           volume_type   = "$volume_type"
-          database_name = "$db_name"
-          database_pass = "$db_password"
-          user          = "$db_user"
+          user          = "$sys_user"
           project_id   = "$project_id"
           source_image = "$source_image"
           zone         = "$zone"

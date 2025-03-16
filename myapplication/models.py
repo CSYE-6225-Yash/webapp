@@ -6,3 +6,12 @@ class HealthCheck(models.Model):
 
     def __str__(self):
         return f"{self.check_id} - {self.date_time}"
+
+class UserData(models.Model):
+    user_id = models.CharField(max_length=100, primary_key=True)
+    file_name = models.CharField(max_length=500)
+    url = models.CharField(max_length=1000)
+    upload_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.user_id} - {self.file_name}"

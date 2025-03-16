@@ -68,16 +68,6 @@ build {
     script = "update_server.sh"
   }
 
-  # Setting up database
-  provisioner "shell" {
-    environment_vars = [
-      "dbname=${var.database_name}",
-      "dbpass=${var.database_pass}",
-      "user=${var.user}"
-    ]
-    script = "database_setup.sh"
-  }
-
   # Setting up webapp
   provisioner "shell" {
     environment_vars = [
