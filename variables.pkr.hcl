@@ -38,16 +38,6 @@ variable "volume_type" {
   default = ""
 }
 
-variable "database_name" {
-  type    = string
-  default = ""
-}
-
-variable "database_pass" {
-  type    = string
-  default = ""
-}
-
 variable "user" {
   type    = string
   default = ""

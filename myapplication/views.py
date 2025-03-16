@@ -102,7 +102,7 @@ def handle_add_user_file(request):
                 "url" : url,
                 "upload_date" : upload_date
             }
-            return JsonResponse(response_data, status=200)
+            return JsonResponse(response_data, status=201)
         except Exception as e:
             response = HttpResponse(status=400)
             response.headers["Cache-Control"] = "no-cache"
