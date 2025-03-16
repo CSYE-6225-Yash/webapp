@@ -3,5 +3,7 @@ from . import views
 
 urlpatterns = [
     path('healthz', views.insert_record),
-    re_path('.*', views.not_found)
+    path('v1/file/<str:id>', views.handle_user_file),
+    path('v1/file', views.handle_add_user_file),
+    re_path('.*', views.not_found, name="not found")
 ]
