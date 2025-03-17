@@ -48,9 +48,13 @@ def handle_user_file(request, id):
                 "url" : user_obj.url,
                 "upload_date" : user_obj.upload_date
             }
-            return JsonResponse(response_data, status=200)
+            response = JsonResponse(response_data, status=200)
+            response.headers["Cache-Control"] = "no-cache"
+            return response
         except Exception as e:
-            return redirect("not found")
+            response = HttpResponse(status=404)
+            response.headers["Cache-Control"] = "no-cache"
+            return response
     # If request is a delete and contains a valid user id then delete and return 204
     elif request.method == "DELETE":
         try:
@@ -67,7 +71,9 @@ def handle_user_file(request, id):
             response.headers["Cache-Control"] = "no-cache"
             return response
         except Exception as e:
-            return redirect("not found")
+            response = HttpResponse(status=404)
+            response.headers["Cache-Control"] = "no-cache"
+            return response
     else:
         # For every other type of request then get returning 405
         response = HttpResponse(status=405)
@@ -102,7 +108,9 @@ def handle_add_user_file(request):
                 "url" : url,
                 "upload_date" : upload_date
             }
-            return JsonResponse(response_data, status=201)
+            response = JsonResponse(response_data, status=201)
+            response.headers["Cache-Control"] = "no-cache"
+            return response
         except Exception as e:
             response = HttpResponse(status=400)
             response.headers["Cache-Control"] = "no-cache"

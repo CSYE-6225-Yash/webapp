@@ -62,6 +62,7 @@ jobs:
           DATABASE_PASSWORD=$db_password
           DATABASE_Host=$db_host
           DATABASE_PORT=$db_port
+          BUCKET_NAME=abc
           EOF
       # Running application tests
       - name: Testing app
