@@ -99,10 +99,12 @@ For linux/mac -
 
 `packer init .` - this command initializes packer and installs required plugins.
 
--Note that in above command `.` refers to the current directory that contains packer template you can specify any other path or file if you want
+- Note that in above command `.` refers to the current directory that contains packer template you can specify any other path or file if you want
 
 `packer fmt .` - this command correctly formats the packer files with correct indentation and spacing.
 
 `packer validate -var-file=var.pkrvars.hcl .` - this command validates the packer files and returns error if there is any syntax error. -var-file here is optional if you have set default variable values to "" then you might kept a variable file and need to pass that file for associating variables.
 
 `packer build -var-file=var.pkrvars.hcl .` - this command is used to start building the custom image. 
+
+- Note that built custom image does not contain local database and so database configuration parameters need to be uploaded with the user data script.
