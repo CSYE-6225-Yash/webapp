@@ -1,5 +1,5 @@
 from django.test import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from django.db.utils import OperationalError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from decouple import config
@@ -139,6 +139,10 @@ class AppHealthCheckTestCase(TestCase):
     # Testcase for post request for /v1/file endpoint
     @patch("boto3.client")
     def test_post_file_without_user_id(self, mock_obj):
+        # Creating dummy return value for head object
+        mock_s3 = MagicMock() 
+        mock_obj.return_value = mock_s3
+        mock_s3.head_object.return_value = {}
         # Creating dummy file to upload
         file_data = b"abcdef"
         file_name = "test_file.jpg"

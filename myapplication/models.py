@@ -12,6 +12,7 @@ class UserData(models.Model):
     file_name = models.CharField(max_length=500)
     url = models.CharField(max_length=1000)
     upload_date = models.DateField()
+    obj_metadata = models.JSONField(null=True)
 
     def __str__(self):
         return f"{self.user_id} - {self.file_name}"
