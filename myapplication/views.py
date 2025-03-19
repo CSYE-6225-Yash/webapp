@@ -99,8 +99,16 @@ def handle_add_user_file(request):
             object_key = f"{user_id}/{file_to_upload.name}"
             # Uploading file to object
             s3.upload_fileobj(file_to_upload, config('BUCKET_NAME'), object_key)
+            # Getting object metadata
+            metadata = s3.head_object(Bucket=f"{config('BUCKET_NAME')}", Key=object_key)
+            try:
+                metadata["LastModified"] = metadata["LastModified"].isoformat()
+                metadata["Expires"] = metadata["Expires"].isoformat()
+                metadata["ObjectLockRetainUntilDate"] = metadata["ObjectLockRetainUntilDate"].isoformat()
+            except:
+                pass
             # Storing metadata in database
-            user_data_obj = UserData(user_id=user_id, file_name=file_to_upload.name, url=url, upload_date=upload_date)
+            user_data_obj = UserData(user_id=user_id, file_name=file_to_upload.name, url=url, upload_date=upload_date, obj_metadata=metadata)
             user_data_obj.save()
             response_data = {
                 "file_name" : file_to_upload.name,
