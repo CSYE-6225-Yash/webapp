@@ -107,4 +107,4 @@ For linux/mac -
 
 `packer build -var-file=var.pkrvars.hcl .` - this command is used to start building the custom image. 
 
-- Note that built custom image does not contain local database and so database configuration parameters need to be uploaded with the user data script.
+- Note that built custom image does not contain local database and so database configuration parameters need to be uploaded with the user data script. 
