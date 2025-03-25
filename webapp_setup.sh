@@ -8,6 +8,20 @@ sudo apt-get install unzip -y
 sudo mkdir -p /opt/csye6225/webapp
 # Unzipping webapp.zip located at tmp in above created directory
 sudo unzip /tmp/webapp.zip -d /opt/csye6225/webapp
+# Changing directory to tmp
+cd /tmp
+# Downloading cloudwatch agent from aws
+wget https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+# Installing cloudwatch agent
+sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
+# Changing location of the cloud-watch-agentconfiguration file
+sudo mv cloudwatch-agent-config.json /opt
+# Creating log file for webapp
+sudo mkdir -p /var/log/webapp
+sudo touch /var/log/webapp/csye6225.log
+# Changing ownership of that file
+sudo chown -R $user:$user /var/log/webapp
+sudo chmod -R 755 /var/log/webapp
 # Switching to webapp directory
 cd /opt/csye6225/webapp
 # Installing required dependencies to run application

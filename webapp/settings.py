@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from pythonjsonlogger.json import JsonFormatter
+import time
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -127,3 +129,40 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+class UTCFormatter(JsonFormatter):
+    converter = time.gmtime
+
+# Creating custom log configuration to use
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "json_formatter" : {
+            "()": UTCFormatter,
+            "format": "{name} {levelname} {asctime} - {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": config('LOG_FILE_PATH'),
+            "level": "INFO",
+            "formatter": "json_formatter",
+        },
+    },
+    "loggers": {
+        "webapp": {
+            "level": "INFO",
+            "handlers": ["file"],
+        },
+    },
+}
+
+# Stats client configuration
+STATSD_HOST = config('STATSD_HOST')
+STATSD_PORT = config('STATSD_PORT')
+STATSD_PREFIX = None
+STATSD_MAXUDPSIZE = 512
+STATSD_IPV6 = False

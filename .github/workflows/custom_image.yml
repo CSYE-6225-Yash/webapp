@@ -67,7 +67,14 @@ jobs:
           DATABASE_Host=$db_host
           DATABASE_PORT=$db_port
           BUCKET_NAME=abc
+          LOG_FILE_PATH=csye6225.log
+          STATSD_HOST=localhost
+          STATSD_PORT=8125
           EOF
+      # Creating logfile for webapp
+      - name: Creating log file for application
+        run: |
+          sudo touch csye6225.log
       # Running application tests
       - name: Testing app
         run: |
@@ -125,6 +132,43 @@ jobs:
           sudo cat > .env << EOF
           DEBUG=$debug
           SECRET_KEY=$django_secret
+          LOG_FILE_PATH=/var/log/webapp/csye6225.log
+          STATSD_HOST=localhost
+          STATSD_PORT=8125
+          EOF
+      # Creating cloudwatch agent config file
+      - name: Creating cloudwatch agent config file
+        run: |
+          sudo cat > cloudwatch-agent-config.json << EOF
+          {
+              "agent": {
+                  "metrics_collection_interval": 10,
+                  "logfile": "/var/logs/amazon-cloudwatch-agent.log"
+              },
+              "logs": {
+                  "logs_collected": {
+                      "files": {
+                          "collect_list": [
+                              {
+                                  "file_path": "/var/log/webapp/csye6225.log",
+                                  "log_group_name": "csye6225",
+                                  "log_stream_name": "webapp"
+                              }
+                          ]
+                      }
+                  },
+                  "log_stream_name": "cloudwatch_log_stream"
+              },
+              "metrics": {
+                  "metrics_collected": {
+                      "statsd": {
+                          "service_address": ":8125",
+                          "metrics_collection_interval": 15,
+                          "metrics_aggregation_interval": 300
+                      }
+                  }
+              }
+          }
           EOF
       # Installing zip and building artifact
       - name: Installing zip and building artifact
