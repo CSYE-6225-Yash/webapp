@@ -71,10 +71,6 @@ jobs:
           STATSD_HOST=localhost
           STATSD_PORT=8125
           EOF
-      # Creating logfile for webapp
-      - name: Creating log file for application
-        run: |
-          sudo touch csye6225.log
       # Running application tests
       - name: Testing app
         run: |
