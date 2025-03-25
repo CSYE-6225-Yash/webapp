@@ -60,6 +60,12 @@ build {
     destination = "/tmp/webapp.zip"
   }
 
+  # Sending cloud-agent-config.json to instance for configuration of cloud watch agent
+  provisioner "file" {
+    source      = "cloudwatch-agent-config.json"
+    destination = "/tmp/cloudwatch-agent-config.json"
+  }
+
   # Updating server
   provisioner "shell" {
     environment_vars = [

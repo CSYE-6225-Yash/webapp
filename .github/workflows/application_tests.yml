@@ -63,6 +63,9 @@ jobs:
           DATABASE_Host=$db_host
           DATABASE_PORT=$db_port
           BUCKET_NAME=abc
+          LOG_FILE_PATH=csye6225.log
+          STATSD_HOST=localhost
+          STATSD_PORT=8125
           EOF
       # Running application tests
       - name: Testing app
