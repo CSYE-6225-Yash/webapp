@@ -18,15 +18,18 @@ def request_received_log(request, endpoint):
     # Counting_api_calls
     statsd.incr(f'{endpoint}_{request.method}')
     # Adding log entry that request is received
-    logger.info(f"{endpoint} endpoint Received {request.method} request from {request.META.get('REMOTE_ADDR')}")
+    logger.info(f"{endpoint} endpoint Received {request.method} request")
     return time.time()
 
 def request_response_log(request, response, endpoint, request_start_time):
     # Adding log entry for server response
-    if response.status_code < 500:
-        logger.info(f"Server Responded {response.status_code} to {request.method} request received from {request.META.get('REMOTE_ADDR')} via {endpoint} endpoint")
+    if response.status_code < 400:
+        logger.info(f"Server Responded {response.status_code} to {request.method} request via {endpoint} endpoint")
     else:
-        logger.error(f"Server Responded {response.status_code} to {request.method} request received from {request.META.get('REMOTE_ADDR')} via {endpoint} endpoint", exc_info=True)
+        if 400 <= response.status_code < 500:
+            logger.error(f"Server Responded {response.status_code} to {request.method} request via {endpoint} endpoint")
+        else:
+            logger.error(f"Server Responded {response.status_code} to {request.method} request via {endpoint} endpoint", exc_info=True)
     # Adding metric of time request took
     statsd.timing(f"{endpoint}_{request.method}_time", int((time.time() - request_start_time) * 1000))
 
