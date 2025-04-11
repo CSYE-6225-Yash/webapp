@@ -208,7 +208,7 @@ jobs:
         run: "packer validate -var-file=dev.pkrvars.hcl ."
       # Running packer build and saving image id
       - name: Running packer build and saving image id
-        run: packer build -var-file=dev.pkrvars.hcl . | sudo tee output.txt
+        run: packer build -var-file=dev.pkrvars.hcl .
       # Reconfiguring aws-cli to use demo account
       - name: Configure AWS Credentials For Demo
         uses: aws-actions/configure-aws-credentials@v4
@@ -219,7 +219,8 @@ jobs:
       # Creating new launch template
       - name: Creating new launch template version
         run: |
-         aws ec2 create-launch-template-version --launch-template-name $launch_template_name --source-version 1 --launch-template-data "ImageId=$(cat output.txt | grep '$aws_region_packer: ami-' | grep -o 'ami-[0-9a-zA-Z]*')"
+          image_id = $(jq -r '.builds[0].artifact_id|split(":")[1]' ./manifest.json)
+          aws ec2 create-launch-template-version --launch-template-name $launch_template_name --source-version 1 --launch-template-data "ImageId=$image_id"
       # Refreshing instances of autoscaling group
       - name: Refreshing instances of autoscaling group
         run: |
