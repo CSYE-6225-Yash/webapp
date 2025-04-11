@@ -13,7 +13,7 @@ packer {
 
 # Adding source for creating machine image on aws
 source "amazon-ebs" "webapp-aws-ami" {
-  ami_name        = "webapp-${formatdate("YYYY-MM-DD", timestamp())}"
+  ami_name        = "webapp-${formatdate("YYYY-MM-DD-hh-mm-ss", timestamp())}"
   ami_description = "AMI for webapp"
   instance_type   = "${var.instance_type}"
   region          = "${var.aws_region}"
@@ -36,7 +36,7 @@ source "amazon-ebs" "webapp-aws-ami" {
 
 # Adding source for creating machine image on gcp
 source "googlecompute" "webapp-gcp-mi" {
-  image_name        = "webapp-${formatdate("YYYY-MM-DD", timestamp())}"
+  image_name        = "webapp-${formatdate("YYYY-MM-DD-hh-mm-ss", timestamp())}"
   image_description = "Machine image for webapp"
   project_id        = "${var.project_id}"
   source_image      = "${var.source_image}"
