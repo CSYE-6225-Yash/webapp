@@ -229,9 +229,9 @@ jobs:
         run: |
           Status="Pending"
           while [ "$Status" != "Successful" ] && [ "$Status" != "Failed" ]; do
+            Status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $autoscaling_group_name --instance-refresh-ids $instance_refresh_id --query 'InstanceRefreshes[0].Status' --output text)
             echo "Current Status = $Status"
-            Status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $autoscaling_group_name --instance-refresh-ids $instance_refresh_id | grep -o '"Status": "[^"]*' | grep -o '[^"]*$')
-            sleep 10
+            sleep 30
           done
           if [ "$Status" == "Failed" ]; then
             exit 1
