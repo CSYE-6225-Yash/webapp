@@ -51,7 +51,7 @@ build {
   # Building custom image for aws and gcp simultaneously
   sources = [
     "source.amazon-ebs.webapp-aws-ami",
-    "source.googlecompute.webapp-gcp-mi"
+    # "source.googlecompute.webapp-gcp-mi"
   ]
 
   # Sending webapp.zip to instance for building machine image
@@ -80,5 +80,10 @@ build {
       "user=${var.user}"
     ]
     script = "webapp_setup.sh"
+  }
+
+  post-processor "manifest" {
+    output = "manifest.json"
+    strip_path = true
   }
 }
