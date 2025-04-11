@@ -218,7 +218,8 @@ jobs:
           aws-region: ${{ vars.AWS_DF_REGION }}
       # Creating new launch template
       - name: Creating new launch template version
-        run: aws ec2 create-launch-template-version --launch-template-name $launch_template_name --source-version 1 --launch-template-data "ImageId=$(output.txt | grep -o 'ami-[0-9a-zA-Z]*')"
+        run: |
+         aws ec2 create-launch-template-version --launch-template-name $launch_template_name --source-version 1 --launch-template-data "ImageId=$(cat output.txt | grep 'us-east-1: ami-' | grep -o 'ami-[0-9a-zA-Z]*')"
       # Refreshing instances of autoscaling group
       - name: Refreshing instances of autoscaling group
         run: |
