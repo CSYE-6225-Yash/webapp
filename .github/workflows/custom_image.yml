@@ -227,10 +227,11 @@ jobs:
       # Waitig for instances to refresh
       - name: Waiting for instances to refresh
         run: |
-          while [ "Successful" != "$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $autoscaling_group_name --instance-refresh-ids $instance_refresh_id | grep -o '"Status": "[^"]*' | grep -o '[^"]*$')" || "Failed" != "$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $autoscaling_group_name --instance-refresh-ids $instance_refresh_id | grep -o '"Status": "[^"]*' | grep -o '[^"]*$')" || "Cancelled" != "$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $autoscaling_group_name --instance-refresh-ids $instance_refresh_id | grep -o '"Status": "[^"]*' | grep -o '[^"]*$')" ]
-          do sleep 5
+          Status="Pending"
+          while [ "$Status" != "Successful" ] && [ "$Status" != "Failed" ] && [ "$Status" != "Cancelled" ]; do
+            STATUS=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $autoscaling_group_name --instance-refresh-ids $instance_refresh_id | grep -o '"Status": "[^"]*' | grep -o '[^"]*$')
+            sleep 10
           done
-          if [ "Successful" != "$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $autoscaling_group_name --instance-refresh-ids $instance_refresh_id | grep -o '"Status": "[^"]*' | grep -o '[^"]*$')" ]
-          then exit 1
+          if [ "$Status" == "Failed" ]; then
+            exit 1
           fi
-          
