@@ -219,7 +219,8 @@ jobs:
       # Creating new launch template
       - name: Creating new launch template version
         run: |
-         aws ec2 create-launch-template-version --launch-template-name $launch_template_name --source-version 1 --launch-template-data "ImageId=$(jq -r '.builds[0].artifact_id|split(":")[1]' ./manifest.json)"
+          image_id = $(jq -r '.builds[0].artifact_id|split(":")[1]' ./manifest.json)
+          aws ec2 create-launch-template-version --launch-template-name $launch_template_name --source-version 1 --launch-template-data "ImageId=$image_id"
       # Refreshing instances of autoscaling group
       - name: Refreshing instances of autoscaling group
         run: |
